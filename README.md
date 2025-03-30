@@ -40,8 +40,8 @@ my-app/
 1. Clone this repo:
 
    ```bash
-   git clone https://github.com/ravali0423/project.git
-   cd project
+   git clone https://github.com/ravali0423/Project.git
+   cd Pwroject
    ```
 
 2. Run Docker Compose:
@@ -53,7 +53,7 @@ my-app/
 3. Visit:
 
    - **Frontend**: `http://localhost:3000`
-   - **Backend**: `http://localhost:5000`
+   - **Backend**: `http://localhost:5008`
    - **MongoDB**: Running on `mongodb://localhost:27017`
 
 ---
