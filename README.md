@@ -58,6 +58,33 @@ my-app/
 
 ---
 
+## 🎨 Tailwind CSS Setup (Frontend)
+
+Tailwind is already configured in the `frontend/` directory. You can use utility classes right away in your React components.
+
+To manually set it up:
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+Add the following to `tailwind.config.js`:
+
+```js
+content: ["./src/**/*.{js,jsx,ts,tsx}"];
+```
+
+And in `index.css`:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+---
+
 ## ⚙️ Environment Variables
 
 Update or set the following in `docker-compose.yml` under `backend`:
