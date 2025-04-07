@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
-const profileRoutes = require('./routes/profile');
+const memberRoutes = require('./routes/member');
+const hiveRoutes = require('./routes/hive');
 const app = express();
 
 const PORT = 5008;
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://mongo:27017/mydb';
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://mongo:27017/atlantis';
 
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
@@ -15,8 +16,10 @@ mongoose.connect(MONGO_URL, {
 .catch(err => console.error(err));
 
 app.use(express.json());
+
 app.use('/api/auth', authRoutes);
-app.use('/api/user', profileRoutes);
+app.use('/api/member', memberRoutes);
+app.use('/api/hive', hiveRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello from backend!');

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+const Member = require('../models/Member');
 const verifyToken = require('../middleware/auth');
 
-router.get('/profile', verifyToken, async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.user.username }).select('-password');
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await Member.findOne({ username: req.user.username }).select('-password');
+    if (!user) return res.status(404).json({ message: 'Member not found' });
 
     res.status(200).json(user);
   } catch (err) {
@@ -14,12 +14,12 @@ router.get('/profile', verifyToken, async (req, res) => {
   }
 });
 
-router.put('/profile', verifyToken, async (req, res) => {
+router.put('/', verifyToken, async (req, res) => {
   try {
     const updateFields = { ...req.body };
     delete updateFields.username;
 
-    const updatedUser = await User.findOneAndUpdate(
+    const updatedUser = await Member.findOneAndUpdate(
       { username: req.user.username },
       { $set: updateFields },
       { new: true }
@@ -31,10 +31,10 @@ router.put('/profile', verifyToken, async (req, res) => {
   }
 });
 
-router.delete('/profile', verifyToken, async (req, res) => {
+router.delete('/', verifyToken, async (req, res) => {
   try {
-    await User.findOneAndDelete({ username: req.user.username });
-    res.status(200).json({ message: 'User deleted successfully' });
+    await Member.findOneAndDelete({ username: req.user.username });
+    res.status(200).json({ message: 'Member deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err });
   }

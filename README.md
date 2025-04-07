@@ -90,7 +90,7 @@ And in `index.css`:
 Update or set the following in `docker-compose.yml` under `backend`:
 
 ```env
-MONGO_URL=mongodb://mongo:27017/mydb
+MONGO_URL=mongodb://mongo:27017/atlantis
 ```
 
 ---
