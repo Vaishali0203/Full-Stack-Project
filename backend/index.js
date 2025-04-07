@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const memberRoutes = require('./routes/member');
 const hiveRoutes = require('./routes/hive');
+const previewRoutes = require('./routes/preview');
+const cors = require('cors');
 const app = express();
 
 const PORT = 5008;
@@ -15,11 +17,17 @@ mongoose.connect(MONGO_URL, {
 .then(() => console.log("MongoDB connected"))
 .catch(err => console.error(err));
 
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/member', memberRoutes);
 app.use('/api/hive', hiveRoutes);
+app.use('/api/preview', previewRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello from backend!');

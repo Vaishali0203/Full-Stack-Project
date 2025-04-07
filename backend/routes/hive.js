@@ -4,6 +4,7 @@ const Hive = require('../models/Hive');
 const Member = require('../models/Member');
 const verifyToken = require('../middleware/auth');
 const { nanoid } = require('nanoid');
+const mongoose = require("mongoose");
 
 router.post('/', verifyToken, async (req, res) => {
   const { name, shieldMode } = req.body;
@@ -92,42 +93,93 @@ router.post('/accept/:key', verifyToken, async (req, res) => {
   }
 });
 
-router.post('/:hiveId/crystals', verifyToken, async (req, res) => {
-  const { title, url } = req.body;
+router.post("/:id/crystals", verifyToken, async (req, res) => {
+  const hiveId = req.params.id;
+  const userId = req.user._id;
+
+  const { crystals } = req.body;
+
+  if (!Array.isArray(crystals) || crystals.length === 0) {
+    return res.status(400).json({ message: "Please send a list of crystals." });
+  }
 
   try {
-    const hive = await Hive.findById(req.params.hiveId);
-    if (!hive) return res.status(404).json({ message: 'Hive not found' });
+    const hive = await Hive.findById(hiveId);
+    if (!hive) return res.status(404).json({ message: "Hive not found" });
 
-    const isMember = hive.members.some(
-      m => m.member?.toString() === req.user._id.toString() && m.status === 'accepted'
+    // 🛡️ Check permission
+    const isQueen = hive.queen.toString() === userId.toString();
+    const isApprovedMember = hive.members.some(
+      (m) => m.member.toString() === userId.toString() && m.status === 'accepted'
     );
 
-    if (!isMember) {
-      return res.status(403).json({ message: 'You are not a member of this Hive' });
+    if (!isQueen && !isApprovedMember) {
+      return res.status(403).json({ message: "Access denied: not a member or queen." });
     }
 
-    hive.crystals.push({
+    // 🧿 Enrich and add crystals
+    const enrichedCrystals = crystals.map(({ title, url }) => ({
       title,
       url,
-      addedBy: req.user._id
+      addedBy: userId,
+      createdAt: new Date()
+    }));
+
+    hive.crystals.push(...enrichedCrystals);
+    await hive.save();
+
+    res.status(201).json({
+      message: `${enrichedCrystals.length} crystals added to the hive.`,
+      crystals: enrichedCrystals
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to add crystals", error: err.message });
+  }
+});
+
+
+router.get('/mine', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Get hives the user owns
+    const ownedHives = await Hive.find({ queen: userId });
+
+    // Get hives the user is a member of (and accepted)
+    const memberHives = await Hive.find({
+      members: {
+        $elemMatch: {
+          member: userId,
+          'invite.accepted': true
+        }
+      },
+      queen: { $ne: userId } // not the queen
     });
 
-    await hive.save();
-    res.status(200).json({ message: 'Crystal added successfully', crystals: hive.crystals });
+    const publicHives = await Hive.find({ shieldMode: 'public' });
+
+    res.status(200).json({
+      ownedHives,
+      memberHives,
+      publicHives
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Error adding Crystal', error: err });
+    console.error("Error fetching user hives:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 router.get('/:hiveId', verifyToken, async (req, res) => {
   try {
-    const hive = await Hive.findById(req.params.hiveId);
+    const hive = await Hive.findById(req.params.hiveId)
+    .populate('queen', 'username')
+    .populate('members.member', 'username')
+    .populate('crystals.addedBy', 'username');
 
     if (!hive) return res.status(404).json({ message: 'Hive not found' });
 
     const isMember = hive.members.some(
-      m => m.member?.toString() === req.user._id.toString() && m.status === 'accepted'
+      m => m.member?._id.toString() === req.user._id.toString() && m.status === 'accepted'
     );
 
     const isPublic = hive.shieldMode === 'public';
