@@ -36,7 +36,7 @@ function Login() {
         const redirectPath = localStorage.getItem("redirectAfterLogin");
         if (redirectPath) {
           localStorage.removeItem("redirectAfterLogin");
-          navigate(redirectPath);
+          window.location.href = redirectPath;
         } else {
           navigate("/dashboard");
         }

@@ -12,8 +12,9 @@ function JoinHive() {
   // On load, check if logged in, else redirect to login
   useEffect(() => {
     if (!token) {
-      localStorage.setItem("redirectAfterLogin", window.location.pathname); // save for after login
-      navigate("/login");
+      localStorage.setItem("redirectAfterLogin", window.location.href); // save for after login
+      // navigate("/login");
+      window.location.pathname = "/login";
     } else {
       setIsLoggedIn(true);
       setLoading(false);

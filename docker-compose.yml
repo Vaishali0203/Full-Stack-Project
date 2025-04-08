@@ -20,7 +20,7 @@ services:
       MONGO_URL: mongodb://mongo:27017/atlantis
       JWT_SECRET: RavaliSecretKey@0423
       EMAIL_USER: hivequeen2025@gmail.com
-      EMAIL_PASS: Cstu@123
+      EMAIL_PASS: vgcm xzaq fkds vjqp
 
   frontend:
     build: ./frontend
