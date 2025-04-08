@@ -1,38 +1,110 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import LayoutWrapper from "../components/LayoutWrapper";
+import LayoutWrapper from "./LayoutWrapper";
 import LinkPreview from "./LinkPreview";
+import { useParams } from "react-router-dom";
+import Hives from "./Hives";
 
-interface IHive {
+export interface ICrystal {
+  _id: string;
+  title: string;
+  url: string;
+  createdAt: string;
+  addedBy: any;
+}
+
+export interface IHive {
+  _id?: string;
   name: string;
-  crystals: {
-    _id: string;
-    title: string;
-    url: string;
-    createdAt: string;
-    addedBy: any;
-  }[];
+  crystals: ICrystal[];
 }
 
 function Dashboard() {
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const [hive, setHive] = useState<IHive>({ name: "", crystals: [] });
-  const [loading, setLoading] = useState(!!id);
+
+  const [ownedHives, setOwnedHives] = useState<IHive[]>([]);
+  const [memberHives, setMemberHives] = useState<IHive[]>([]);
+  const [publicHives, setPublicHives] = useState<IHive[]>([]);
+
+  const [loading, setLoading] = useState<boolean>(!!id);
+
+  const [inviteModal, setInviteModal] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+
+  const fetchMyHives = async () => {
+    try {
+      const res = await fetch("http://localhost:5008/api/hive/mine", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Failed to fetch user hives");
+      const data = await res.json();
+      setOwnedHives(data.ownedHives || []);
+      setMemberHives(data.memberHives || []);
+      setPublicHives(data.publicHives || []);
+    } catch (err) {
+      console.error("❌ Error fetching hives:", err);
+    }
+  };
+
+  const fetchHive = async () => {
+    if (!id) return;
+
+    try {
+      const res = await fetch(`http://localhost:5008/api/hive/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch hive");
+      const data = await res.json();
+      setHive(data);
+    } catch (err) {
+      console.error("❌ Error loading hive:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const invite = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:5008/api/hive/${id}/invite`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email: inviteEmail }),
+      });
+
+      if (res.ok) {
+        alert("✅ Invite sent successfully!");
+      } else {
+        const err = await res.json();
+        alert("❌ Failed to send invite: " + err.message);
+      }
+    } catch (error) {
+      alert("🔥 Error sending invite");
+    } finally {
+      setInviteModal(false);
+      setInviteEmail("");
+    }
+  };
+
+  useEffect(() => {
+    if (id) fetchHive();
+    else fetchMyHives();
+  }, [id]);
 
   useEffect(() => {
     const handlePaste = async (event: any) => {
       const pastedText = event.clipboardData.getData("text");
-
       const urlRegex = /(https?:\/\/[^\s]+)/g;
       const urls = pastedText.match(urlRegex);
 
       if (!urls || urls.length === 0) return;
 
       const url = urls[0];
-      console.log("📋 Pasted URL:", url);
-
-      // Optional: Fetch page title via preview or just use domain
       const title = new URL(url).hostname;
 
       try {
@@ -61,58 +133,48 @@ function Dashboard() {
       }
     };
 
-    document.addEventListener("paste", handlePaste);
-    return () => document.removeEventListener("paste", handlePaste);
-  }, [id, token]);
-
-  const fetchHive = async () => {
-    if (!id) return;
-
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(`http://localhost:5008/api/hive/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch hive");
-
-      const data = await res.json();
-      setHive(data);
-    } catch (err) {
-      console.error("❌ Error loading hive:", err);
-    } finally {
-      setLoading(false);
+    if (id) {
+      document.addEventListener("paste", handlePaste);
+      return () => document.removeEventListener("paste", handlePaste);
     }
-  };
-
-  useEffect(() => {
-    fetchHive();
-  }, [id]);
+  }, [id, token]);
 
   return (
     <LayoutWrapper>
-      {id && (
+      {!id ? (
+        <div className="mb-6">
+          <Hives hives={ownedHives} name="Your own Hives" />
+          <Hives hives={memberHives} name="Hives you are Member of" />
+          <Hives hives={publicHives} name="All Public Hives" />
+        </div>
+      ) : (
         <>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
               {hive.name}
             </h2>
 
-            <button
-              onClick={() => {
-                hive.crystals.forEach((crystal) => {
-                  if (crystal.url) {
-                    window.open(crystal.url, "_blank", "noopener,noreferrer");
-                  }
-                });
-              }}
-              className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition"
-            >
-              🔗 Open All
-            </button>
+            <div>
+              <button
+                onClick={() => setInviteModal(true)}
+                className="mr-5 text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition"
+              >
+                + Invite
+              </button>
+
+              <button
+                onClick={() => {
+                  hive.crystals.forEach((crystal: ICrystal) => {
+                    if (crystal.url) {
+                      window.open(crystal.url, "_blank", "noopener,noreferrer");
+                    }
+                  });
+                }}
+                className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition"
+              >
+                🔗 Open All
+              </button>
+            </div>
           </div>
 
           {loading ? (
@@ -121,7 +183,7 @@ function Dashboard() {
             <div className="grid">
               {hive.crystals && hive.crystals.length > 0 ? (
                 <div className="grid gap-4">
-                  {hive.crystals.map((crystal) => (
+                  {hive.crystals.map((crystal: ICrystal) => (
                     <div
                       key={crystal._id}
                       className="p-4 bg-white dark:bg-gray-800 rounded shadow text-sm text-gray-800 dark:text-gray-200"
@@ -140,6 +202,39 @@ function Dashboard() {
             <p className="text-red-500">Hive not found.</p>
           )}
         </>
+      )}
+
+      {inviteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-md w-full max-w-sm shadow-md">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
+              Invite someone to your Hive 🐝
+            </h3>
+
+            <input
+              type="email"
+              placeholder="Enter email address"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              className="w-full px-3 py-2 mb-4 border border-gray-300 rounded dark:bg-gray-700 dark:text-white"
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setInviteModal(false)}
+                className="text-gray-500 hover:underline"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => invite()}
+                className="bg-indigo-600 text-white px-4 py-1.5 rounded hover:bg-indigo-500"
+              >
+                Send Invite
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </LayoutWrapper>
   );

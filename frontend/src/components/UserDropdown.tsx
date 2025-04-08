@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 
-interface IUser {
+export interface IUser {
   username: string;
+  name?: string;
   email: string;
+  phone?: string;
+  gender?: string;
 }
 
 function UserDropdown() {

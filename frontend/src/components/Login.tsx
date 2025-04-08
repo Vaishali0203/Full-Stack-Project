@@ -33,7 +33,13 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        navigate("/dashboard");
+        const redirectPath = localStorage.getItem("redirectAfterLogin");
+        if (redirectPath) {
+          localStorage.removeItem("redirectAfterLogin");
+          navigate(redirectPath);
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         alert(data.message || "Login failed");
       }
@@ -109,7 +115,7 @@ function Login() {
         <p className="mt-10 text-center text-sm/6 text-gray-500">
           Not a member?{" "}
           <a
-            href="#"
+            href="/register"
             className="font-semibold text-indigo-600 hover:text-indigo-500"
           >
             Create an account

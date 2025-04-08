@@ -7,6 +7,8 @@ import {
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Settings from "./components/Settings";
+import Register from "./components/Register";
+import JoinHive from "./components/JoinHive";
 
 function AppRoutes() {
   return (
@@ -17,6 +19,9 @@ function AppRoutes() {
 
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/join/:code" element={<JoinHive />} />
 
         {/* Protected Routes */}
         <Route path="/dashboard" element={<Dashboard />} />

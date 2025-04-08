@@ -1,6 +1,7 @@
 import UserDropdown from "./UserDropdown";
 import logo from "../assets/logo1.png";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LayoutWrapper({ children }) {
   const [ownedHives, setOwnedHives] = useState([]);
@@ -9,6 +10,12 @@ function LayoutWrapper({ children }) {
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
+
+  const [showModal, setShowModal] = useState(false);
+  const [name, setName] = useState("");
+  const [shieldMode, setShieldMode] = useState("private");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHives = async () => {
@@ -35,9 +42,34 @@ function LayoutWrapper({ children }) {
     fetchHives();
   }, [token]);
 
+  const createHive = async () => {
+    if (!name.trim() || !shieldMode) return;
+
+    try {
+      const res = await fetch("http://localhost:5008/api/hive", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name, shieldMode }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setShowModal(false);
+        setName("");
+        navigate(`/dashboard/${data.hive._id}`);
+      } else {
+        console.error("❌ Failed to create hive");
+      }
+    } catch (err) {
+      console.error("🔥 Error creating hive:", err);
+    }
+  };
+
   return (
     <>
-      {/* Top Navbar */}
       <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
@@ -71,6 +103,12 @@ function LayoutWrapper({ children }) {
               </a>
             </div>
             <div className="flex items-center ms-3">
+              <button
+                onClick={() => setShowModal(true)}
+                className="mr-5 px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-500"
+              >
+                + Create Hive
+              </button>
               <UserDropdown />
             </div>
           </div>
@@ -161,8 +199,50 @@ function LayoutWrapper({ children }) {
         </div>
       </aside>
 
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md w-96">
+            <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">
+              Create New Hive
+            </h2>
+            <input
+              type="text"
+              placeholder="Enter Hive Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-3 py-2 mb-4 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+            />
+            <select
+              id="shieldMode"
+              value={shieldMode}
+              onChange={(e) => setShieldMode(e.target.value)}
+              class="w-full px-3 py-2 mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            >
+              <option selected="">Select Visibility</option>
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-3 py-1 text-sm rounded border dark:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={createHive}
+                className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-500"
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
-      <main className="p-4 sm:ml-64 mt-16 min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
+      <main className="p-4 pt-24 sm:ml-64 min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
         {children}
       </main>
     </>

@@ -5,6 +5,7 @@ const Member = require('../models/Member');
 const verifyToken = require('../middleware/auth');
 const { nanoid } = require('nanoid');
 const mongoose = require("mongoose");
+const { sendInviteEmail } = require('../utils/mailer');
 
 router.post('/', verifyToken, async (req, res) => {
   const { name, shieldMode } = req.body;
@@ -58,7 +59,7 @@ router.post('/:hiveId/invite', verifyToken, async (req, res) => {
     await hive.save();
 
     const inviteLink = `http://localhost:3000/join/${hive.stargateKey}`;
-    console.log(`📧 Send this invite link to ${email}: ${inviteLink}`);
+    await sendInviteEmail(email, hive.name, inviteLink);
 
     res.status(200).json({ message: 'Invitation created', inviteLink });
   } catch (err) {
@@ -150,7 +151,7 @@ router.get('/mine', verifyToken, async (req, res) => {
       members: {
         $elemMatch: {
           member: userId,
-          'invite.accepted': true
+          status: 'accepted'
         }
       },
       queen: { $ne: userId } // not the queen
