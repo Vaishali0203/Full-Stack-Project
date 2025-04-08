@@ -41,7 +41,7 @@ my-app/
 
    ```bash
    git clone https://github.com/ravali0423/Project.git
-   cd Pwroject
+   cd Project
    ```
 
 2. Run Docker Compose Build:
