@@ -3,6 +3,7 @@ import LayoutWrapper from "./LayoutWrapper";
 import LinkPreview from "./LinkPreview";
 import { useParams } from "react-router-dom";
 import Hives from "./Hives";
+import HiveMembers, { IHiveMember } from "./HiveMembers";
 
 export interface ICrystal {
   _id: string;
@@ -16,12 +17,19 @@ export interface IHive {
   _id?: string;
   name: string;
   crystals: ICrystal[];
+  members: IHiveMember[];
+  queen: { username: string };
 }
 
 function Dashboard() {
   const { id } = useParams();
   const token = localStorage.getItem("token");
-  const [hive, setHive] = useState<IHive>({ name: "", crystals: [] });
+  const [hive, setHive] = useState<IHive>({
+    name: "",
+    crystals: [],
+    members: [],
+    queen: { username: "" },
+  });
 
   const [ownedHives, setOwnedHives] = useState<IHive[]>([]);
   const [memberHives, setMemberHives] = useState<IHive[]>([]);
@@ -30,6 +38,7 @@ function Dashboard() {
   const [loading, setLoading] = useState<boolean>(!!id);
 
   const [inviteModal, setInviteModal] = useState(false);
+  const [memberModal, setMemberModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
 
   const fetchMyHives = async () => {
@@ -156,12 +165,11 @@ function Dashboard() {
 
             <div>
               <button
-                onClick={() => setInviteModal(true)}
+                onClick={() => setMemberModal(true)}
                 className="mr-5 text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition"
               >
-                + Invite
+                Members
               </button>
-
               <button
                 onClick={() => {
                   hive.crystals.forEach((crystal: ICrystal) => {
@@ -231,6 +239,41 @@ function Dashboard() {
                 className="bg-indigo-600 text-white px-4 py-1.5 rounded hover:bg-indigo-500"
               >
                 Send Invite
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {memberModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-md w-full shadow-md">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
+              Members in {hive.name}
+            </h3>
+
+            <div className="flex justify-end gap-2 mb-5">
+              <HiveMembers
+                members={hive.members}
+                username={hive.queen.username}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setMemberModal(false)}
+                className="text-gray-500 hover:underline"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setMemberModal(false);
+                  setInviteModal(true);
+                }}
+                className="mr-5 text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition"
+              >
+                + Invite
               </button>
             </div>
           </div>

@@ -152,7 +152,7 @@ function LayoutWrapper({ children }) {
                       href={`/dashboard/${hive._id}`}
                       className="ml-4 block p-2 text-sm text-gray-800 rounded-md hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     >
-                      🐝 {hive.name}
+                      {hive.name}
                     </a>
                   </li>
                 ))}
@@ -189,7 +189,7 @@ function LayoutWrapper({ children }) {
                       href={`/dashboard/${hive._id}`}
                       className="ml-4 block p-2 text-sm text-gray-800 rounded-md hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     >
-                      🌐 {hive.name}
+                      {hive.name}
                     </a>
                   </li>
                 ))}
