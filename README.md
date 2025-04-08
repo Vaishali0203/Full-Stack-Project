@@ -44,13 +44,19 @@ my-app/
    cd Pwroject
    ```
 
-2. Run Docker Compose:
+2. Run Docker Compose Build:
 
    ```bash
    docker-compose up --build
    ```
 
-3. Visit:
+3. Run Docker Build in Background:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+4. Visit:
 
    - **Frontend**: `http://localhost:3000`
    - **Backend**: `http://localhost:5008`
@@ -118,7 +124,7 @@ npm start     # run the server/app
 
 ## 🧁 Author
 
-Made with ❤️ by **Ravali** a.k.a. your bestie ✨
+Made with ❤️ by **Ravali**
 
 > "Code with chai & chill."
 
