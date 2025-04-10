@@ -2,6 +2,7 @@ import UserDropdown from "./UserDropdown";
 import logo from "../assets/logo1.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function LayoutWrapper({ children }) {
   const [ownedHives, setOwnedHives] = useState([]);
@@ -20,7 +21,7 @@ function LayoutWrapper({ children }) {
   useEffect(() => {
     const fetchHives = async () => {
       try {
-        const res = await fetch("http://localhost:5008/api/hive/mine", {
+        const res = await fetch(`${apiUrl}/api/hive/mine`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -46,7 +47,7 @@ function LayoutWrapper({ children }) {
     if (!name.trim() || !shieldMode) return;
 
     try {
-      const res = await fetch("http://localhost:5008/api/hive", {
+      const res = await fetch(`${apiUrl}/api/hive`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

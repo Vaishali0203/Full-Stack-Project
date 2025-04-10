@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export interface IUser {
   _id?: string;
@@ -19,7 +20,7 @@ function UserDropdown() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:5008/api/member", {
+        const res = await fetch(`${apiUrl}/api/member`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

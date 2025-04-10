@@ -3,6 +3,7 @@ import axios from "axios";
 import { ICrystal } from "./Dashboard";
 import CrystalDropdown from "./CrystalDropdown";
 import logo from "../assets/logo1.png";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 interface LinkPreviewProps {
   hiveId: string;
@@ -27,7 +28,7 @@ function LinkPreview({ hiveId, crystal, onReload }: LinkPreviewProps) {
   const deleteCrystal = async (crystalId: string) => {
     try {
       const res = await fetch(
-        `http://localhost:5008/api/hive/${hiveId}/crystals/${crystalId}`,
+        `${apiUrl}/api/hive/${hiveId}/crystals/${crystalId}`,
         {
           method: "DELETE",
           headers: {

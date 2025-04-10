@@ -65,7 +65,7 @@ router.post("/:hiveId/invite", verifyToken, async (req, res) => {
 
     await hive.save();
 
-    const inviteLink = `http://localhost:3000/join/${hive.stargateKey}`;
+    const inviteLink = `${process.env.APP_URL}/join/${hive.stargateKey}`;
     await sendInviteEmail(email, hive.name, inviteLink);
 
     res.status(200).json({ message: "Invitation created", inviteLink });

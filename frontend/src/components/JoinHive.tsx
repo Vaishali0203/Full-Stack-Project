@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function JoinHive() {
   const { code } = useParams(); // the invitation key
@@ -23,7 +24,7 @@ function JoinHive() {
 
   const handleAccept = async () => {
     try {
-      const res = await fetch(`http://localhost:5008/api/hive/accept/${code}`, {
+      const res = await fetch(`${apiUrl}/api/hive/accept/${code}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

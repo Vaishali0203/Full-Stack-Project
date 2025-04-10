@@ -5,6 +5,7 @@ import Hives from "./Hives";
 import HiveMembers, { IHiveMember } from "./HiveMembers";
 import LinkPreview from "./LinkPreview";
 import { IUser } from "./UserDropdown";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export interface ICrystal {
   _id: string;
@@ -52,7 +53,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:5008/api/member", {
+        const res = await fetch(`${apiUrl}/api/member`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -76,7 +77,7 @@ function Dashboard() {
 
   const fetchMyHives = async () => {
     try {
-      const res = await fetch("http://localhost:5008/api/hive/mine", {
+      const res = await fetch(`${apiUrl}/api/hive/mine`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch user hives");
@@ -93,7 +94,7 @@ function Dashboard() {
     if (!id) return;
 
     try {
-      const res = await fetch(`http://localhost:5008/api/hive/${id}`, {
+      const res = await fetch(`${apiUrl}/api/hive/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -110,7 +111,7 @@ function Dashboard() {
   const invite = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5008/api/hive/${id}/invite`, {
+      const res = await fetch(`${apiUrl}/api/hive/${id}/invite`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -150,19 +151,16 @@ function Dashboard() {
       const title = new URL(url).hostname;
 
       try {
-        const response = await fetch(
-          `http://localhost:5008/api/hive/${id}/crystals`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              crystals: [{ title, url }],
-            }),
-          }
-        );
+        const response = await fetch(`${apiUrl}/api/hive/${id}/crystals`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            crystals: [{ title, url }],
+          }),
+        });
 
         if (response.ok) {
           console.log("✅ Crystal added from paste!");

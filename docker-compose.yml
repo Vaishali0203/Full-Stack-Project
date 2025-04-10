@@ -21,6 +21,7 @@ services:
       JWT_SECRET: RavaliSecretKey@0423
       EMAIL_USER: hivequeen2025@gmail.com
       EMAIL_PASS: vgcm xzaq fkds vjqp
+      APP_URL: http://localhost:3000
 
   frontend:
     build: ./frontend
@@ -31,6 +32,8 @@ services:
     tty: true
     depends_on:
       - backend
+    environment:
+      REACT_APP_API_URL: http://localhost:5008
 
 volumes:
   mongo-data:

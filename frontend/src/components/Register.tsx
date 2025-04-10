@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo1.png";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -27,7 +28,7 @@ function Register() {
     }
 
     try {
-      const response = await fetch("http://localhost:5008/api/auth/register", {
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import LayoutWrapper from "../components/LayoutWrapper";
 import { IUser } from "./UserDropdown";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function Settings() {
   const [user, setUser] = useState<IUser>({
@@ -17,7 +18,7 @@ function Settings() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:5008/api/member", {
+        const res = await fetch(`${apiUrl}/api/member`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -39,7 +40,7 @@ function Settings() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("http://localhost:5008/api/member", {
+      const res = await fetch(`${apiUrl}/api/member`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
