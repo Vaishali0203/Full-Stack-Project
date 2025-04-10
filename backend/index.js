@@ -1,5 +1,5 @@
-import express from "express";
-import mongoose from "mongoose";
+const express = require("express");
+const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const memberRoutes = require("./routes/member");
 const hiveRoutes = require("./routes/hive");
