@@ -38,6 +38,11 @@ app.use("/api/member", memberRoutes);
 app.use("/api/hive", hiveRoutes);
 app.use("/api/preview", previewRoutes);
 
+app.use(
+  "/static",
+  express.static(path.join(__dirname, "../frontend/build/static"))
+);
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
