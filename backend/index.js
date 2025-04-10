@@ -6,8 +6,12 @@ const hiveRoutes = require("./routes/hive");
 const previewRoutes = require("./routes/preview");
 const cors = require("cors");
 const app = express();
-const path = require("path");
 require("dotenv").config();
+const path = require("path");
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = 5008;
 const MONGO_URL =
