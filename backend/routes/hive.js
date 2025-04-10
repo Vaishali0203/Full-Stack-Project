@@ -7,6 +7,7 @@ const { nanoid } = require("nanoid");
 const mongoose = require("mongoose");
 const { sendInviteEmail } = require("../utils/mailer");
 const { preview } = require("../utils/crystal");
+require("dotenv").config();
 
 router.post("/", verifyToken, async (req, res) => {
   const { name, shieldMode } = req.body;

@@ -6,6 +6,8 @@ const hiveRoutes = require("./routes/hive");
 const previewRoutes = require("./routes/preview");
 const cors = require("cors");
 const app = express();
+const path = require("path");
+require("dotenv").config();
 
 const PORT = 5008;
 const MONGO_URL =

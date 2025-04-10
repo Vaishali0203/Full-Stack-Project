@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Member = require("../models/Member");
+require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "defaultsecretkey";
 
