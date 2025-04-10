@@ -29,12 +29,18 @@ app.use(
 
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/member", memberRoutes);
 app.use("/api/hive", hiveRoutes);
 app.use("/api/preview", previewRoutes);
 
-app.get("/", (req, res) => {
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+});
+
+app.get("/api/hello", (req, res) => {
   res.send("Hello from backend!");
 });
 
