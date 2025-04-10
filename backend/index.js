@@ -38,15 +38,6 @@ app.use("/api/member", memberRoutes);
 app.use("/api/hive", hiveRoutes);
 app.use("/api/preview", previewRoutes);
 
-app.use(
-  "/static",
-  express.static(path.join(__dirname, "../frontend/build/static"), {
-    etag: false,
-    lastModified: false,
-    maxAge: 0,
-  })
-);
-
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
