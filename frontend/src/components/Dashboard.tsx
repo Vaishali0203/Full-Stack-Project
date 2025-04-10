@@ -205,7 +205,7 @@ function Dashboard() {
               </button>
               <button
                 onClick={() => {
-                  hive.crystals.forEach((crystal: ICrystal) => {
+                  (hive.crystals || []).forEach((crystal: ICrystal) => {
                     if (crystal.url) {
                       window.open(crystal.url, "_blank", "noopener,noreferrer");
                     }
@@ -224,23 +224,29 @@ function Dashboard() {
             <div className="grid">
               {hive.crystals && hive.crystals.length > 0 ? (
                 <div className="grid gap-4">
-                  {hive.crystals.map((crystal: ICrystal) => {
-                    const isMine = crystal.addedBy._id === user._id;
-                    return (
-                      <div
-                        key={crystal._id}
-                        className={`p-4 flex ${
-                          isMine ? "justify-end" : "justify-start"
-                        }`}
-                      >
-                        <LinkPreview
-                          hiveId={hive._id || ""}
-                          crystal={crystal}
-                          onReload={fetchHive}
-                        />
-                      </div>
-                    );
-                  })}
+                  {(hive.crystals || [])
+                    .sort(
+                      (a, b) =>
+                        new Date(b.createdAt).getTime() -
+                        new Date(a.createdAt).getTime()
+                    )
+                    .map((crystal: ICrystal) => {
+                      const isMine = crystal.addedBy._id === user._id;
+                      return (
+                        <div
+                          key={crystal._id}
+                          className={`p-4 flex ${
+                            isMine ? "justify-end" : "justify-start"
+                          }`}
+                        >
+                          <LinkPreview
+                            hiveId={hive._id || ""}
+                            crystal={crystal}
+                            onReload={fetchHive}
+                          />
+                        </div>
+                      );
+                    })}
                 </div>
               ) : (
                 <p className="text-gray-500 dark:text-gray-400">
