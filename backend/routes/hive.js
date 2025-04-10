@@ -195,4 +195,50 @@ router.get('/:hiveId', verifyToken, async (req, res) => {
   }
 });
 
+// DELETE /api/hive/:hiveId
+router.delete('/:hiveId', verifyToken, async (req, res) => {
+  try {
+    const { hiveId } = req.params;
+    const hive = await Hive.findById(hiveId);
+
+    if (!hive) return res.status(404).json({ message: 'Hive not found' });
+
+    if (hive.owner.toString() !== req.user._id) {
+      return res.status(403).json({ message: 'Only the owner can delete this hive' });
+    }
+
+    await hive.remove();
+    res.status(200).json({ message: 'Hive deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting hive', error });
+  }
+});
+
+// DELETE /api/hives/:hiveId/crystals/:crystalId
+router.delete('/:hiveId/crystals/:crystalId', verifyToken, async (req, res) => {
+  try {
+    const { hiveId, crystalId } = req.params;
+    const hive = await Hive.findById(hiveId);
+
+    if (!hive) return res.status(404).json({ message: 'Hive not found' });
+
+    const crystal = hive.crystals.id(crystalId);
+    if (!crystal) return res.status(404).json({ message: 'Crystal not found' });
+
+    const isQueen = hive.queen.toString() === req.user._id;
+    const isAddedBy = crystal.addedBy?.toString() === req.user._id;
+
+    if (!isQueen && !isAddedBy) {
+      return res.status(403).json({ message: 'Not authorized to delete this crystal' });
+    }
+
+    hive.crystals.pull({ _id: crystalId });
+    await hive.save();
+
+    res.status(200).json({ message: 'Crystal deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting crystal', error });
+  }
+});
+
 module.exports = router;

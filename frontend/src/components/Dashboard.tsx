@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import LayoutWrapper from "./LayoutWrapper";
-import LinkPreview from "./LinkPreview";
 import { useParams } from "react-router-dom";
 import Hives from "./Hives";
 import HiveMembers, { IHiveMember } from "./HiveMembers";
+import LinkPreview from "./LinkPreview";
+import { IUser } from "./UserDropdown";
 
 export interface ICrystal {
   _id: string;
@@ -40,6 +41,33 @@ function Dashboard() {
   const [inviteModal, setInviteModal] = useState(false);
   const [memberModal, setMemberModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
+
+  const [user, setUser] = useState<IUser>({ username: "", email: "" });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:5008/api/member", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch user");
+        }
+
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const fetchMyHives = async () => {
     try {
@@ -191,14 +219,23 @@ function Dashboard() {
             <div className="grid">
               {hive.crystals && hive.crystals.length > 0 ? (
                 <div className="grid gap-4">
-                  {hive.crystals.map((crystal: ICrystal) => (
-                    <div
-                      key={crystal._id}
-                      className="p-4 bg-white dark:bg-gray-800 rounded shadow text-sm text-gray-800 dark:text-gray-200"
-                    >
-                      <LinkPreview crystal={crystal} />
-                    </div>
-                  ))}
+                  {hive.crystals.map((crystal: ICrystal) => {
+                    const isMine = crystal.addedBy._id === user._id;
+                    return (
+                      <div
+                        key={crystal._id}
+                        className={`p-4 flex ${
+                          isMine ? "justify-end" : "justify-start"
+                        }`}
+                      >
+                        <LinkPreview
+                          hiveId={hive._id || ""}
+                          crystal={crystal}
+                          onReload={fetchHive}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-gray-500 dark:text-gray-400">
