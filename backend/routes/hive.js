@@ -3,7 +3,7 @@ const router = express.Router();
 const Hive = require("../models/Hive");
 const Member = require("../models/Member");
 const verifyToken = require("../middleware/auth");
-const { nanoid } = require("nanoid");
+import { nanoid } from "nanoid";
 const mongoose = require("mongoose");
 const { sendInviteEmail } = require("../utils/mailer");
 const { preview } = require("../utils/crystal");
