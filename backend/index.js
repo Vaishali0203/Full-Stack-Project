@@ -8,7 +8,9 @@ const cors = require("cors");
 const app = express();
 
 const PORT = 5008;
-const MONGO_URL = process.env.MONGO_URL || "mongodb://mongo:27017/atlantis";
+const MONGO_URL =
+  process.env.MONGO_URL ||
+  "mongodb+srv://parimalaravali2016:MV37AwWnvm1t4krh@hive.r9yspo7.mongodb.net/?retryWrites=true&w=majority&appName=hive";
 
 mongoose
   .connect(MONGO_URL, {

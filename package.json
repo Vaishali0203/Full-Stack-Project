@@ -1,0 +1,10 @@
+{
+    "name": "my-app",
+    "scripts": {
+      "install": "npm install --prefix frontend && npm install --prefix backend",
+      "build": "npm run build --prefix frontend",
+      "start": "node backend/index.js"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+  }
