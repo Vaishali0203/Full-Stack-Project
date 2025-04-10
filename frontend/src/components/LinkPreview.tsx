@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ICrystal } from "./Dashboard";
 import CrystalDropdown from "./CrystalDropdown";
+import logo from "../assets/logo1.png";
 
 interface LinkPreviewProps {
   hiveId: string;
@@ -16,9 +17,12 @@ interface IMeta {
 }
 
 function LinkPreview({ hiveId, crystal, onReload }: LinkPreviewProps) {
-  const { url } = crystal;
-  const [meta, setMeta] = useState<IMeta>({ title: "", description: "" });
   const token = localStorage.getItem("token");
+
+  crystal.meta = crystal.meta || {
+    title: "Unknown",
+    description: "Unknown",
+  };
 
   const deleteCrystal = async (crystalId: string) => {
     try {
@@ -46,26 +50,6 @@ function LinkPreview({ hiveId, crystal, onReload }: LinkPreviewProps) {
       console.error("Error deleting:", err);
     }
   };
-
-  useEffect(() => {
-    const fetchPreview = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5008/api/preview?url=${encodeURIComponent(url)}`
-        );
-        const data = await res.json();
-        if (data && data.message === "Failed to fetch metadata") {
-          setMeta({ title: "", description: "" });
-        } else {
-          setMeta(data);
-        }
-      } catch (err) {
-        console.error("OG preview error:", err);
-      }
-    };
-
-    fetchPreview();
-  }, [url]);
 
   return (
     <>
@@ -97,26 +81,23 @@ function LinkPreview({ hiveId, crystal, onReload }: LinkPreviewProps) {
                 {new URL(crystal.url).hostname}
               </a>
             </p>
-            {meta.image ? (
-              <a
-                href={crystal.url}
-                className="bg-gray-50 dark:bg-gray-600 rounded-xl p-4 mb-2 hover:bg-gray-200 dark:hover:bg-gray-500"
-              >
-                <img
-                  src={meta.image}
-                  alt={meta.title}
-                  className="rounded-lg mb-2"
-                />
-                <span className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                  {meta.description}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
-                  {meta.title}
-                </span>
-              </a>
-            ) : (
-              <></>
-            )}
+            <a
+              href={crystal.url}
+              className="bg-gray-50 dark:bg-gray-600 rounded-xl p-4 mb-2 hover:bg-gray-200 dark:hover:bg-gray-500"
+            >
+              <img
+                src={crystal.meta.image || logo}
+                alt={crystal.meta.title}
+                className="rounded-lg mb-2"
+              />
+              <span className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                {crystal.meta.description}
+              </span>
+              <br />
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
+                {crystal.meta.title}
+              </span>
+            </a>
           </div>
           <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
             {/* Delivered */}
