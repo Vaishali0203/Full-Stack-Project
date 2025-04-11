@@ -14,11 +14,26 @@ const preview = async (crystal, userId) => {
 
     const page = await browser.newPage();
 
+    // Set headers
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/119.0.0.0 Safari/537.36"
     );
 
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
+    await page.setExtraHTTPHeaders({
+      "Accept-Language": "en-US,en;q=0.9",
+    });
+
+    console.log("Navigating to:", url);
+    const response = await page.goto(url, {
+      waitUntil: "networkidle2", // wait until no network requests for 500ms
+      timeout: 20000,
+    });
+
+    const status = response.status();
+    const html = await page.content();
+
+    console.log("Page status:", status);
+    console.log("Page content preview:\n", html.substring(0, 500)); // debug
 
     const meta = await page.evaluate(() => {
       const getMeta = (selector) => {
@@ -42,6 +57,8 @@ const preview = async (crystal, userId) => {
     });
 
     await browser.close();
+
+    console.log("Fetched meta:", meta);
 
     return {
       ...crystal,
