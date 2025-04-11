@@ -1,41 +1,63 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
+const puppeteer = require("puppeteer");
 
 const preview = async (crystal, userId) => {
   const { url } = crystal;
-  if (!url) return res.status(400).json({ message: "URL required" });
+  if (!url) return { error: "URL required" };
+
+  let browser;
 
   try {
-    const response = await axios.get(url, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/119.0.0.0 Safari/537.36",
-      },
-      timeout: 8000,
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
-    const $ = cheerio.load(response.data);
+    const page = await browser.newPage();
 
-    const getMeta = (name) =>
-      $(`meta[property='og:${name}']`).attr("content") ||
-      $(`meta[name='${name}']`).attr("content");
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/119.0.0.0 Safari/537.36"
+    );
 
-    const preview = {
-      title: getMeta("title") || $("title").text() || "No title",
-      description: getMeta("description") || "No description available",
-      image: getMeta("image"),
-      url: url,
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
+
+    const meta = await page.evaluate(() => {
+      const getMeta = (selector) => {
+        const el = document.querySelector(selector);
+        return el ? el.content : null;
+      };
+
+      return {
+        title:
+          getMeta("meta[property='og:title']") ||
+          getMeta("meta[name='title']") ||
+          document.title ||
+          "No title",
+        description:
+          getMeta("meta[property='og:description']") ||
+          getMeta("meta[name='description']") ||
+          "No description available",
+        image: getMeta("meta[property='og:image']") || null,
+        url: window.location.href,
+      };
+    });
+
+    await browser.close();
+
+    return {
+      ...crystal,
+      addedBy: userId,
+      meta,
     };
-
-    return { ...crystal, addedBy: userId, meta: preview };
   } catch (err) {
-    console.log(err, "ravali");
+    if (browser) await browser.close();
+    console.error("Puppeteer error:", err);
+
     return {
       ...crystal,
       addedBy: userId,
       meta: {
         title: `${err.message} - Unknown`,
-        description: `${err.description} - Unknown`,
+        description: "No description available",
         url: url,
       },
     };
