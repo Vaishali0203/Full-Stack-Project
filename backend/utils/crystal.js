@@ -29,12 +29,13 @@ const preview = async (crystal, userId) => {
 
     return { ...crystal, addedBy: userId, meta: preview };
   } catch (err) {
+    console.log(err, "ravali");
     return {
       ...crystal,
       addedBy: userId,
       meta: {
-        title: "Unknown",
-        description: "Unknown",
+        title: `${err.message} - Unknown`,
+        description: `${err.description} - Unknown`,
         url: url,
       },
     };
