@@ -9,7 +9,6 @@ import Dashboard from "./components/Dashboard";
 import Settings from "./components/Settings";
 import Register from "./components/Register";
 import JoinHive from "./components/JoinHive";
-import MediaImage from "./components/MediaImage";
 
 function AppRoutes() {
   return (
@@ -28,8 +27,6 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/:id" element={<Dashboard />} />
         <Route path="/settings" element={<Settings />} />
-
-        <Route path="/static/media/:imageName" element={<MediaImage />} />
 
         {/* Optional: 404 Page */}
         <Route path="*" element={<h1>404 - Page Not Found</h1>} />
