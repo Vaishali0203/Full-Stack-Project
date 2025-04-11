@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo1.png";
+// import logo from "../assets/logo1.png";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -55,7 +55,11 @@ function Login() {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img alt="Hive Logo" src={logo} className="mx-auto h-50 w-auto" />
+        <img
+          alt="Hive Logo"
+          src="/assets/logo1.png"
+          className="mx-auto h-50 w-auto"
+        />
         <h2 className="text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Sign in to your account
         </h2>
