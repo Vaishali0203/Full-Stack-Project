@@ -33,17 +33,22 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.url}`);
+  next();
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/member", memberRoutes);
 app.use("/api/hive", hiveRoutes);
 app.use("/api/preview", previewRoutes);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
-});
-
 app.get("/api/hello", (req, res) => {
   res.send("Hello from backend!");
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
