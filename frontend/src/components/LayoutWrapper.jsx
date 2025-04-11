@@ -1,5 +1,4 @@
 import UserDropdown from "./UserDropdown";
-import logo from "../assets/logo1.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -97,7 +96,7 @@ function LayoutWrapper({ children }) {
                 </svg>
               </button>
               <a href="/" className="flex ms-2 md:me-24">
-                <img src={logo} className="h-8 me-3" alt="Logo" />
+                <img src="/assets/logo1.png" className="h-8 me-3" alt="Logo" />
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
                   Hives
                 </span>

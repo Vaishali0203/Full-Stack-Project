@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { ICrystal } from "./Dashboard";
 import CrystalDropdown from "./CrystalDropdown";
-import logo from "../assets/logo1.png";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 interface LinkPreviewProps {
@@ -87,7 +84,7 @@ function LinkPreview({ hiveId, crystal, onReload }: LinkPreviewProps) {
               className="bg-gray-50 dark:bg-gray-600 rounded-xl p-4 mb-2 hover:bg-gray-200 dark:hover:bg-gray-500"
             >
               <img
-                src={crystal.meta.image || logo}
+                src={crystal.meta.image || "/assets/logo1.png"}
                 alt={crystal.meta.title}
                 className="rounded-lg mb-2"
               />

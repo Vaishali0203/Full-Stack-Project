@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo1.png";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function Register() {
@@ -59,7 +58,11 @@ function Register() {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img alt="Hive Logo" src={logo} className="mx-auto h-50 w-auto" />
+        <img
+          alt="Hive Logo"
+          src="/assets/logo1.png"
+          className="mx-auto h-50 w-auto"
+        />
         <h2 className="text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Create your account
         </h2>
