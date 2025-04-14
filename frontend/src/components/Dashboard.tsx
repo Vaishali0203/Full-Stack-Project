@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import LayoutWrapper from "./LayoutWrapper";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Hives from "./Hives";
 import HiveMembers, { IHiveMember } from "./HiveMembers";
 import LinkPreview from "./LinkPreview";
 import { IUser } from "./UserDropdown";
+import DeleteHiveButton from "./DeleteHiveButton";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export interface ICrystal {
@@ -31,6 +32,7 @@ export interface IHive {
 function Dashboard() {
   const { id } = useParams();
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
   const [hive, setHive] = useState<IHive>({
     name: "",
     crystals: [],
@@ -197,7 +199,7 @@ function Dashboard() {
             <div>
               <button
                 onClick={() => setMemberModal(true)}
-                className="mr-5 text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition"
+                className="mr-5 text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition cursor-pointer"
               >
                 Members
               </button>
@@ -209,10 +211,15 @@ function Dashboard() {
                     }
                   });
                 }}
-                className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition"
+                className="mr-5 text-sm px-3 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition cursor-pointer"
               >
                 🔗 Open All
               </button>
+              <DeleteHiveButton
+                hiveId={hive._id}
+                token={token}
+                onDeleted={() => navigate("/dashboard")}
+              />
             </div>
           </div>
 

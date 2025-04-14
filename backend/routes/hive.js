@@ -217,13 +217,14 @@ router.delete("/:hiveId", verifyToken, async (req, res) => {
 
     if (!hive) return res.status(404).json({ message: "Hive not found" });
 
-    if (hive.owner.toString() !== req.user._id) {
+    if (hive.queen.toString() !== req.user._id) {
       return res
         .status(403)
-        .json({ message: "Only the owner can delete this hive" });
+        .json({ message: "Only the queen can delete this hive" });
     }
 
-    await hive.remove();
+    await hive.deleteOne();
+
     res.status(200).json({ message: "Hive deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting hive", error });
