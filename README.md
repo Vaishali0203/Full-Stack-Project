@@ -120,6 +120,48 @@ node index.js
 
 Visit: [http://localhost:5008](http://localhost:5008)
 
+## 📬 API Endpoints
+
+### 🔐 /api/auth – Authentication
+
+| Method | Endpoint  | Purpose                      |
+| ------ | --------- | ---------------------------- |
+| POST   | /register | Register a new user          |
+| POST   | /login    | Log in and receive JWT token |
+
+### 👤 /api/member – User Profile Management
+
+| Method | Endpoint | Purpose                       |
+| ------ | -------- | ----------------------------- |
+| GET    | /        | Get logged-in user profile    |
+| PUT    | /        | Update logged-in user profile |
+| DELETE | /        | Delete logged-in user account |
+
+### 🐝 /api/hive – Hive Management
+
+| Method | Endpoint                     | Purpose                                          |
+| ------ | ---------------------------- | ------------------------------------------------ |
+| POST   | /                            | Create a new Hive                                |
+| POST   | /:hiveId/invite              | Send an invite to a Hive                         |
+| POST   | /accept/:key                 | Accept a Hive invite via key                     |
+| POST   | /:id/crystals                | Add one or more crystals (links) to a Hive       |
+| GET    | /mine                        | Get Hives user owns or is a member of            |
+| GET    | /:hiveId                     | Get full details of a specific Hive              |
+| DELETE | /:hiveId                     | Delete a Hive (Queen only)                       |
+| DELETE | /:hiveId/crystals/:crystalId | Delete a crystal (Queen or crystal creator only) |
+
+### 🔎 /api/preview – Link Previews
+
+| Method | Endpoint | Purpose                            |
+| ------ | -------- | ---------------------------------- |
+| GET    | /        | Fetch OpenGraph metadata for a URL |
+
+### 👋 /api/hello – Test Route
+
+| Method | Endpoint | Purpose                   |
+| ------ | -------- | ------------------------- |
+| GET    | /hello   | Test backend connectivity |
+
 ## 🧁 Author
 
 Made with ❤️ by **Ravali**
