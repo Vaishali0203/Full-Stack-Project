@@ -12,7 +12,8 @@ This project is a full-stack application built using:
 
 ## 🌐 Live Preview
 
-Coming soon...
+http://54.188.182.65:5008/login
+Visit: [http://54.188.182.65:5008/](http://54.188.182.65:5008/)
 
 ---
 
