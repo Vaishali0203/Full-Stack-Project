@@ -1,126 +1,124 @@
-# 🚀 MERN Stack App with Docker
+# 🐝 HiveVerse
+
+HiveVerse is a full-stack collaborative web application inspired by Stargate Atlantis. It enables users to create groups called **Hives** and organize/share web links called **Crystals**. The platform includes user authentication, email invitations, link previews, and a responsive UI.
 
 This project is a full-stack application built using:
 
 - **MongoDB** (database)
 - **Express.js** (backend)
 - **React** (frontend)
-- **Docker + Docker Compose** (for containerization)
+
+---
+
+## 🌐 Live Preview
+
+Coming soon...
 
 ---
 
 ## 🗂 Project Structure
 
 ```
-my-app/
-├── backend/             # Express.js API
-│   ├── Dockerfile
-│   ├── package.json
-│   └── index.js
+hiveverse/
+├── backend/          # Express.js API
+│   ├── middleware/   # Authentication Middleware (auth)
+│   ├── models/       # Mongoose schemas (Hive, Member)
+|   ├── routes/       # Auth, Hive, Member, etc.
+|   ├── utils/        # Email utility, helper functions
+|   └── index.js      # Express entry point (serves both frontend + API)
 ├── frontend/            # React App
-│   ├── Dockerfile
+│   ├── src
+|     |──  assets
+|     |──  components
+|     |──  routes
+|     |──  App
 │   ├── package.json
 │   └── public/
-├── docker-compose.yml   # Orchestrates all containers
 ```
 
 ---
 
-## 🐳 Dockerized Setup
+## 🔥 Key Features
 
-### 📦 Prerequisites
-
-- [Docker](https://www.docker.com/products/docker-desktop/)
-- [Docker Compose](https://docs.docker.com/compose/)
-
----
-
-### ▶️ Getting Started
-
-1. Clone this repo:
-
-   ```bash
-   git clone https://github.com/ravali0423/Project.git
-   cd Project
-   ```
-
-2. Run Docker Compose Build:
-
-   ```bash
-   docker-compose up --build
-   ```
-
-3. Run Docker Build in Background:
-
-   ```bash
-   docker-compose up -d
-   ```
-
-4. Visit:
-
-   - **Frontend**: `http://localhost:3000`
-   - **Backend**: `http://localhost:5008`
-   - **MongoDB**: Running on `mongodb://localhost:27017`
+- ✅ JWT-based authentication
+- ✅ Create Hives (groups) with visibility controls
+- ✅ Invite users via email using Gmail SMTP (App Passwords)
+- ✅ Paste detection to auto-create link Crystals
+- ✅ `/join/:code` flow for invite acceptance
+- ✅ Role-based member access
+- ✅ Mobile responsive UI with TailwindCSS
+- ✅ Express serves both API and built React frontend
+- ✅ OpenGraph-based link preview
 
 ---
 
-## 🎨 Tailwind CSS Setup (Frontend)
+## 🛠️ Tech Stack
 
-Tailwind is already configured in the `frontend/` directory. You can use utility classes right away in your React components.
+### Frontend
 
-To manually set it up:
+- React + TypeScript
+- TailwindCSS
+- React Router v6
+
+### Backend
+
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT for authentication
+- Nodemailer for email invites
+- OpenGraph scraping for link previews
+
+---
+
+## 🚀 Running the Project Locally
+
+### Prerequisites
+
+- Node.js
+- MongoDB (local or Atlas)
+- Gmail with App Password
+
+### 1. Clone the repository
 
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+git clone https://github.com/ravali0423/Project.git
+cd Project
 ```
 
-Add the following to `tailwind.config.js`:
+### 2. Set Environment Variables
 
-```js
-content: ["./src/**/*.{js,jsx,ts,tsx}"];
-```
-
-And in `index.css`:
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
----
-
-## ⚙️ Environment Variables
-
-Update or set the following in `docker-compose.yml` under `backend`:
+Create a `.env` file inside `/Project` if it is not available in clone:
 
 ```env
-MONGO_URL=mongodb://mongo:27017/atlantis
+PORT=5008
+MONGO_URL=mongodb+srv://parimalaravali2016:MV37AwWnvm1t4krh@hive.r9yspo7.mongodb.net/?retryWrites=true&w=majority&appName=hive
+JWT_SECRET=RavaliSecretKey@0423
+EMAIL_USER=hivequeen2025@gmail.com
+EMAIL_PASS=vgcm xzaq fkds vjqp
+REACT_APP_API_URL=http://54.188.182.65:5008
 ```
 
----
+> 🔐 Note: Use Gmail App Passwords (requires 2FA)
 
-## 📁 Useful Scripts
-
-In the **backend** and **frontend** folders:
+### 3. Install Dependencies
 
 ```bash
-npm install   # install dependencies
-npm start     # run the server/app
+cd backend
+npm install
+
+cd ../frontend
+npm install
+npm run build
 ```
 
----
+### 4. Start the Server
 
-## 💡 Tech Stack
+```bash
+cd ../backend
+node index.js
+```
 
-- React 18+
-- Express 4+
-- MongoDB
-- Node.js (v23.10.0 or use `node:current` in Dockerfile)
-- Docker & Docker Compose
-
----
+Visit: [http://localhost:5008](http://localhost:5008)
 
 ## 🧁 Author
 
