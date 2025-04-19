@@ -164,9 +164,7 @@ Visit: [http://localhost:5008](http://localhost:5008)
 
 ## 🧁 Author
 
-Made with ❤️ by **Ravali**
-
-> "Code with chai & chill."
+Made by **Team 5**
 
 ---
 
